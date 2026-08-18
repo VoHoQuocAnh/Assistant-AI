@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jenny</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blue: #168cff;
+    --cyan: #55d9ff;
+    --purple: #7b61ff;
+}
+
+body {
+    min-height: 100vh;
+    background: #000;
+    color: white;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app {
+    width: min(100vw, 560px);
+    height: 100vh;
+    max-height: 920px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 48%, rgba(0, 105, 255, .16), transparent 35%),
+        radial-gradient(ellipse at 50% 100%, rgba(0, 120, 255, .30), transparent 38%),
+        #020304;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-left: 1px solid rgba(255,255,255,.08);
+    border-right: 1px solid rgba(255,255,255,.08);
+    pointer-events: none;
+}
+
+/* --- THANH BÊN TRÁI (SIDEBAR LỊCH SỬ BỔ SUNG) --- */
+.sidebar {
+    position: absolute;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background: rgba(10, 15, 25, 0.95);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    z-index: 20;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    padding: 60px 15px 20px 15px;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    z-index: 25;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(85, 217, 255, 0.2);
+}
+
+.history-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 12px;
+    padding-left: 5px;
+}
+
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.2s;
+}
+
+.history-item:hover {
+    background: rgba(22, 140, 255, 0.2);
+    color: #fff;
+}
+
+.clear-btn {
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(255, 100, 100, 0.8);
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.top {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    right: 28px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 5;
+}
+
+.logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,.9);
+    margin-left: 35px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,.45);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #42ffbd;
+    box-shadow: 0 0 8px #42ffbd, 0 0 18px rgba(66,255,189,.6);
+    animation: pulseStatus 2s infinite;
+}
+
+@keyframes pulseStatus {
+    0%,100% { opacity: .5; }
+    50% { opacity: 1; }
+}
+
+.orb-area {
+    position: absolute;
+    top: 13%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orb-glow {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,130,255,.32), rgba(0,80,255,.10) 40%, transparent 70%);
+    filter: blur(18px);
+    animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%,100% { transform: scale(.95); opacity: .65; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+.orb {
+    position: relative;
+    width: 165px;
+    height: 165px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 25%, rgba(40,120,255,.20), transparent 35%),
+        radial-gradient(circle at 65% 70%, rgba(90,50,255,.18), transparent 45%),
+        #01040a;
+    box-shadow: inset -15px -10px 30px rgba(0,110,255,.15), inset 10px 10px 25px rgba(80,70,255,.08);
+    overflow: hidden;
+    animation: orbFloat 5s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.orb::before {
+    content: "";
+    position: absolute;
+    width: 175px;
+    height: 65px;
+    left: -7px;
+    top: 50px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #30aaff;
+    border-right-color: #62e5ff;
+    border-bottom-color: #6c4dff;
+    transform: rotate(-25deg);
+    filter: drop-shadow(0 0 5px #168cff) drop-shadow(0 0 15px rgba(30,150,255,.7));
+    animation: ringMove 5s linear infinite;
+}
+
+@keyframes ringMove {
+    from { transform: rotate(-25deg); }
+    to { transform: rotate(335deg); }
+}
+
+.orb::after {
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 190px;
+    left: 20px;
+    top: -13px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    border-right-color: #4ee7ff;
+    border-bottom-color: #377dff;
+    transform: rotate(35deg);
+    filter: drop-shadow(0 0 7px #168cff);
+    animation: ring2 6s linear infinite;
+}
+
+@keyframes ring2 {
+    from { transform: rotate(35deg); }
+    to { transform: rotate(-325deg); }
+}
+
+.content {
+    position: absolute;
+    top: 45%;
+    bottom: 120px;
+    width: 100%;
+    text-align: center;
+    padding: 0 25px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.greeting {
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(255,255,255,.62);
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: clamp(28px, 6vw, 38px);
+    line-height: 1.2;
+    font-weight: 650;
+    letter-spacing: -1px;
+    color: #f5f7fb;
+    text-shadow: 0 0 30px rgba(255,255,255,.04);
+}
+
+.chat-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.chat-bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: left;
+    backdrop-filter: blur(10px);
+}
+
+.chat-bubble.user {
+    align-self: flex-end;
+    background: rgba(22, 140, 255, 0.25);
+    border: 1px solid rgba(85, 217, 255, 0.4);
+    color: #fff;
+    max-width: 85%;
+}
+
+.chat-bubble.ai {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #55d9ff;
+    max-width: 90%;
+}
+
+.input-wrapper {
+    position: absolute;
+    bottom: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 55px);
+    max-width: 470px;
+    z-index: 10;
+}
+
+.input-box {
+    position: relative;
+    height: 70px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 22px 0 27px;
+    background: linear-gradient(135deg, rgba(80,160,255,.15), rgba(255,255,255,.04));
+    border: 1px solid rgba(150,210,255,.35);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 10px 40px rgba(0,90,255,.12), inset 0 1px 1px rgba(255,255,255,.15);
+    transition: .3s ease;
+}
+
+.input-box:focus-within {
+    border-color: rgba(80,190,255,.7);
+    box-shadow: 0 0 30px rgba(0,130,255,.25), inset 0 1px 1px rgba(255,255,255,.2);
+}
+
+.input-box input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 18px;
+    font-family: inherit;
+}
+
+.input-box input::placeholder {
+    color: rgba(255,255,255,.65);
+}
+
+.voice {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.voice:hover {
+    background: rgba(255,255,255,.08);
+}
+
+.voice-bars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 25px;
+}
+
+.voice-bars span {
+    width: 2px;
+    border-radius: 3px;
+    background: white;
+    animation: voice 1s ease-in-out infinite;
+}
+
+.voice-bars span:nth-child(1) { height: 8px; animation-delay: -.3s; }
+.voice-bars span:nth-child(2) { height: 15px; animation-delay: -.15s; }
+.voice-bars span:nth-child(3) { height: 22px; }
+.voice-bars span:nth-child(4) { height: 13px; animation-delay: -.2s; }
+.voice-bars span:nth-child(5) { height: 8px; animation-delay: -.4s; }
+
+@keyframes voice {
+    0%,100% { transform: scaleY(.65); opacity: .6; }
+    50% { transform: scaleY(1); opacity: 1; }
+}
+
+.tools {
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    transform: translateY(60px);
+    opacity: 0;
+    transition: .4s;
+}
+
+.input-wrapper:hover .tools {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.tool {
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.tool:hover {
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰ History</button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="history-title">LỊCH SỬ CHAT</div>
+        <div class="history-list" id="historyList"></div>
+        <div class="clear-btn" onclick="clearHistory()">🗑 Xóa lịch sử</div>
+    </div>
+
+    <div class="top">
+        <div class="status" id="statusBox">
+            <span class="status-dot"></span>
+            SYSTEM READY
+        </div>
+    </div>
+
+    <div class="orb-area">
+        <div class="orb-glow"></div>
+        <div class="orb"></div>
+    </div>
+
+    <div class="content" id="scrollContent">
+        <div id="greetingBox">
+            <div class="greeting">Hello, <span id="username">Arthur</span></div>
+            <h1 class="title">
+                <span>How can I help you today,</span><br>
+                <span> Young Master?</span>
+            </h1>
+        </div>
+
+        <div class="chat-list" id="chatList"></div>
+    </div>
+
+    <div class="input-wrapper">
+        <div class="input-box">
+            <input id="prompt" type="text" placeholder="Ask anything..." autocomplete="off">
+            <button class="voice" id="voiceBtn">
+                <div class="voice-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </button>
+        </div>
+
+        <div class="tools">
+            <div class="tool">＋ Attach</div>
+            <div class="tool">⌘ Tools</div>
+            <div class="tool">◉ Voice</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const input = document.getElementById("prompt");
+const orb = document.querySelector(".orb");
+const orbGlow = document.querySelector(".orb-glow");
+const statusBox = document.getElementById("statusBox");
+const greetingBox = document.getElementById("greetingBox");
+const chatList = document.getElementById("chatList");
+const historyList = document.getElementById("historyList");
+const scrollContent = document.getElementById("scrollContent");
+const sidebar = document.getElementById("sidebar");
+
+window.addEventListener("DOMContentLoaded", loadHistory);
+
+async function loadHistory() {
+    try {
+        const res = await fetch('/history');
+        const history = await res.json();
+        
+        renderSidebar(history);
+        if (history && history.length > 0) {
+            greetingBox.style.display = "none";
+            renderChatList(history);
+        }
+    } catch (e) {
+        console.error("Lỗi:", e);
+    }
+}
+
+function renderSidebar(history) {
+    historyList.innerHTML = "";
+    history.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerText = item.user;
+        div.onclick = () => {
+            scrollToMessage(index);
+            toggleSidebar(); 
+        };
+        historyList.appendChild(div);
+    });
+}
+
+function renderChatList(history) {
+    chatList.innerHTML = "";
+    history.forEach((item, index) => {
+        const userBubble = document.createElement("div");
+        userBubble.className = "chat-bubble user";
+        userBubble.id = `msg-${index}`;
+        userBubble.innerText = item.user;
+        chatList.appendChild(userBubble);
+
+        const aiBubble = document.createElement("div");
+        aiBubble.className = "chat-bubble ai";
+        aiBubble.innerText = item.assistant;
+        chatList.appendChild(aiBubble);
+    });
+    scrollToBottom();
+}
+
+input.addEventListener("keydown", async (e) => {
+    if (e.key === "Enter") {
+        const value = input.value.trim();
+        if (!value) return;
+
+        input.value = "";
+        greetingBox.style.display = "none";
+        startThinking();
+        appendBubble("user", value);
+
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: value })
+            });
+
+            const data = await response.json();
+            stopThinking();
+
+            const replyText = data.reply || data.response || data.message || "Không có phản hồi";
+            appendBubble("ai", replyText);
+            loadHistory();
+
+        } catch (error) {
+            console.error("Lỗi:", error);
+            stopThinking();
+            appendBubble("ai", "Lỗi kết nối Server!");
+        }
+    }
+});
+
+function appendBubble(type, text) {
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${type}`;
+    bubble.innerText = text;
+    chatList.appendChild(bubble);
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    scrollContent.scrollTop = scrollContent.scrollHeight;
+}
+
+function scrollToMessage(index) {
+    const el = document.getElementById(`msg-${index}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleSidebar() {
+    sidebar.classList.toggle("active");
+}
+
+async function clearHistory() {
+    if (confirm("Xóa toàn bộ lịch sử?")) {
+        await fetch('/history', { method: 'DELETE' });
+        chatList.innerHTML = "";
+        historyList.innerHTML = "";
+        greetingBox.style.display = "block";
+        toggleSidebar();
+    }
+}
+
+function startThinking() {
+    orb.style.animationDuration = "1s";
+    orbGlow.style.animationDuration = "0.8s";
+    statusBox.innerHTML = `<span class="status-dot"></span> THINKING`;
+}
+
+function stopThinking() {
+    orb.style.animationDuration = "5s";
+    orbGlow.style.animationDuration = "4s";
+    statusBox.innerHTML = `<span class="status-dot"></span> SYSTEM READY`;
+}
+
+document.addEventListener("mousemove", (e) => {
+    const x = (e.clientX / window.innerWidth - .5);
+    const y = (e.clientY / window.innerHeight - .5);
+    orb.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+});
+</script>
+
+</body>
+</html>
