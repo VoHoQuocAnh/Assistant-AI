@@ -13,4 +13,4 @@ AI Chatbot Application
 * **Backend:** Python (Flask / FastAPI)
 * **Frontend:** HTML5, CSS3, JavaScript
 * **AI Engine:** Google Gemini API / OpenAI API
-* * **Version Control:** Git, GitHub
+* **Version Control:** Git, GitHub
