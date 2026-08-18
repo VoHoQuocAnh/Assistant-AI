@@ -1,16 +1,16 @@
-# 🤖 MINI AI CHATBOT (ASSISTANT AI)
+# 🤖 MINI AI CHATBOT (AI Assistant)
 
-Ứng dụng Chatbot AI hỗ trợ phản hồi và trò chuyện thông minh, được xây dựng dựa trên Python và giao diện Web trực quan.
+AI Chatbot Application
 
-## 🌟 Tính năng chính
+## 🌟 Key Features
 
-* 💬 **Trò chuyện trực tuyến:** Gửi câu hỏi và nhận câu trả lời từ AI theo thời gian thực.
-* 🎨 **Giao diện thân thiện:** Web UI đơn giản, dễ thao tác và phản hồi nhanh.
-* ⚙️ **Tùy biến linh hoạt:** Dễ dàng mở rộng tính năng và kết nối thêm các API AI khác.
+* 💬 **Real-time Chat:** Send questions and receive AI responses in real-time.
+* 🎨 **User-friendly Interface:** Simple, intuitive web UI with fast responsiveness.
+* ⚙️ **Flexible Customization:** Easily extend features and integrate additional AI APIs.
 
-## 🛠️ Công nghệ sử dụng
+## 🛠️ Technologies Used
 
 * **Backend:** Python (Flask / FastAPI)
 * **Frontend:** HTML5, CSS3, JavaScript
 * **AI Engine:** Google Gemini API / OpenAI API
-* **Quản lý phiên bản:** Git, GitHub
+* * **Version Control:** Git, GitHub
