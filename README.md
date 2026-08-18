@@ -14,16 +14,3 @@
 * **Frontend:** HTML5, CSS3, JavaScript
 * **AI Engine:** Google Gemini API / OpenAI API
 * **Quản lý phiên bản:** Git, GitHub
-
-## 🚀 Hướng dẫn cài đặt & Chạy dự án
-
-### 1. Yêu cầu hệ thống
-* Python 3.8 trở lên
-* Git
-
-### 2. Cài đặt các bước
-
-1. **Clone (Tải) dự án về máy:**
-   ```bash
-   git clone [https://github.com/VoHoQuocAnh/Assistant-AI.git](https://github.com/VoHoQuocAnh/Assistant-AI.git)
-   cd Assistant-AI
